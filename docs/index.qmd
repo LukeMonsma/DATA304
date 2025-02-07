@@ -4,7 +4,32 @@ format: html
 embed-resources: true
 ---
 
-## HEADER
-Text
+```{r, echo = FALSE}
+library(vegawidget)
+```
 
-sample stuff
+```{r}
+'
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json", "data": { "url":"https://cdn.jsdelivr.net/npm/vega-datasets@2.11.0/data/seattle-weather.csv" },
+  "transform": [{"calculate": "datum.date", "as": "year"}],
+  "title": {"text": ""},
+  "mark": { "type": "line" },
+  "height": 300,
+  "width": 600,
+  "encoding": {
+    "x": { 
+      "field": "date",
+      "type": "temporal" 
+    }, 
+    "y": {
+      "field": "temp_max",
+      "type": "quantitative",
+      "title": "Power Generated"
+    },
+    "detail": {
+    }
+  }
+}
+' %>% as_vegaspec()
+```
