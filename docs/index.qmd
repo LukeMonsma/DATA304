@@ -4,6 +4,8 @@ format: html
 embed-resources: true
 ---
 
+[Assignment](https://calvin-data304.netlify.app/hw/hw05-portfolio-start.html)
+
 ## Exercise 1
 
 a.

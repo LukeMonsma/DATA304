@@ -4323,6 +4323,7 @@ if (HTMLWidgets.shinyMode) {
 </header>
 
 
+<p><a href="https://calvin-data304.netlify.app/hw/hw05-portfolio-start.html">Assignment</a></p>
 <section id="exercise-1" class="level2">
 <h2 class="anchored" data-anchor-id="exercise-1">Exercise 1</h2>
 <ol type="a">
@@ -4380,8 +4381,8 @@ Attaching package: &#39;dplyr&#39;</code></pre>
 modify_inner_spec.vegaspec_unit</code></pre>
 </div>
 <div class="cell-output-display">
-<div id="htmlwidget-ec1e63e34d041107f3f0" style="width:auto;height:auto;" class="vegawidget-vl5 html-widget"></div>
-<script type="application/json" data-for="htmlwidget-ec1e63e34d041107f3f0">{"x":{
+<div id="htmlwidget-f9bec10d61d3513cfca7" style="width:auto;height:auto;" class="vegawidget-vl5 html-widget"></div>
+<script type="application/json" data-for="htmlwidget-f9bec10d61d3513cfca7">{"x":{
   "chart_spec": {
     "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
     "height": 400,
@@ -23429,10 +23430,10 @@ modify_inner_spec.vegaspec_unit</code></pre>
 <span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">vl_encode_y</span>(<span class="st">&quot;weather:Q&quot;</span>) <span class="sc">|&gt;</span></span>
 <span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">vl_aggregate_y</span>(<span class="st">&quot;count&quot;</span>) <span class="sc">|&gt;</span></span>
 <span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">vl_axis_x</span>(<span class="at">title =</span> <span class="st">&quot;Month&quot;</span>) <span class="sc">|&gt;</span></span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">vl_axis_y</span>(<span class="at">title =</span> <span class="st">&quot;Average High and Low Tempurature&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">vl_axis_y</span>(<span class="at">title =</span> <span class="st">&quot;# Of Days Over 4 Years&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div id="htmlwidget-3c15c1e35cd71730c879" style="width:auto;height:auto;" class="vegawidget-vl5 html-widget"></div>
-<script type="application/json" data-for="htmlwidget-3c15c1e35cd71730c879">{"x":{
+<div id="htmlwidget-9ab0856d7aa24965adbc" style="width:auto;height:auto;" class="vegawidget-vl5 html-widget"></div>
+<script type="application/json" data-for="htmlwidget-9ab0856d7aa24965adbc">{"x":{
   "chart_spec": {
     "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
     "data": {
@@ -42452,7 +42453,7 @@ modify_inner_spec.vegaspec_unit</code></pre>
           "type": "quantitative",
           "aggregate": "count",
           "axis": {
-            "title": "Average High and Low Tempurature"
+            "title": "# Of Days Over 4 Years"
           }
         }
       }
@@ -42469,6 +42470,9 @@ modify_inner_spec.vegaspec_unit</code></pre>
   }
 },"evals":[],"jsHooks":[]}</script>
 </div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The Y axis is bad, not sure how to make it what I want without data wrangling</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co"># I think I want a % of days in that month that are that weather</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co"># The shape should be mostly the same though</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 </section>
