@@ -1,35 +1,64 @@
 ---
-title: "The real website"
+title: "Homework 5"
 format: html
 embed-resources: true
 ---
 
-```{r, echo = FALSE}
-library(vegawidget)
+## Exercise 1
+
+a.
+![Graph](https://r-graph-gallery.com/img/fromTheWeb/we-line-chart-consumer-confidence.png){width=70%}
+
+b.
+The graphic is made of lines, with x representing time and y an indicator of how much the average consumer feels about the future of the economy (100 is neutral, high is positive low is negative). There is a line for each of 9 chosen countries, and these are distinguished with facets that assign a color to one each.
+
+c.
+The stated story is that consumer confidence has fallen across the world in 2022, which it shows well.
+
+d.
+I think it's a good graphic because it gives a satisfying amount of detail while still allowing comparisons between countries. The trend for each country is easy to see, and while comparing one country to another is difficult the gray lines make comparing one country to the rest of the "world" easy.
+
+e.
+I can absolutely make lines and facets so the core of it I can do. I haven't done layering like this before but that seems simple based on the class slides. I don't know exactly how to make the non trendline layers like the 100 line, point, and label on the right. It shouldn't bee to complicated though once layers are made.
+
+f.
+As mentioned I'm not certain how to make the middle line and the text, but I think the slides give enough detail.
+
+## Exercise 2
+```{r}
+library(vegabrite)
+library(dplyr)
+weather <- read.csv("https://calvin-data304.netlify.app/data/weather-with-dates.csv")
+
+weather <- weather |> filter(location == "Seattle")
 ```
 
+### 2.2
 ```{r}
-'
-{
-  "$schema": "https://vega.github.io/schema/vega-lite/v5.json", "data": { "url":"https://cdn.jsdelivr.net/npm/vega-datasets@2.11.0/data/seattle-weather.csv" },
-  "transform": [{"calculate": "datum.date", "as": "year"}],
-  "title": {"text": ""},
-  "mark": { "type": "line" },
-  "height": 300,
-  "width": 600,
-  "encoding": {
-    "x": { 
-      "field": "date",
-      "type": "temporal" 
-    }, 
-    "y": {
-      "field": "temp_max",
-      "type": "quantitative",
-      "title": "Power Generated"
-    },
-    "detail": {
-    }
-  }
-}
-' %>% as_vegaspec()
+vl_chart(width = 600, height = 400, title = "Monthly Tempuratures in Seattle") |>
+  vl_add_data(weather) |>
+  vl_mark_bar() |>
+  vl_encode_x("month:O") |>
+  vl_encode_y("temp_max:Q") |>
+  vl_aggregate_y("mean") |>
+  vl_encode_y2("temp_min:Q") |>
+  vl_aggregate_y2("mean") |>
+  vl_axis_x(title = "Month") |>
+  vl_axis_y(title = "Average High and Low Tempurature")
+```
+
+### 2.3
+```{r}
+vl_chart(width = 300, height = 200, title = "Monthly Tempuratures in Seattle") |>
+  vl_add_data(weather) |>
+  vl_mark_line() |>
+  vl_facet("weather", columns = 2) |>
+  vl_encode_x("month:O") |>
+  vl_encode_y("weather:Q") |>
+  vl_aggregate_y("count") |>
+  vl_axis_x(title = "Month") |>
+  vl_axis_y(title = "# Of Days Over 4 Years")
+# The Y axis is bad, not sure how to make it what I want without data wrangling
+# I think I want a % of days in that month that are that weather
+# The shape should be mostly the same though
 ```
