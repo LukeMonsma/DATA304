@@ -114,7 +114,7 @@ library(vegawidget)
     { "values" :
         [{"Date":"Q1-2017","Completion Rate":0.91,"Response Rate":0.023},
         {"Date":"Q2-2017","Completion Rate":0.93,"Response Rate":0.018},
-        {"Date":"Q3-2017","Completion Rate":0.91,"Response Rate":0.028},
+        {"Date":"Q3-  2017","Completion Rate":0.91,"Response Rate":0.028},
         {"Date":"Q42017","Completion Rate":0.89,"Response Rate":0.023},
         {"Date":"Q1-2018","Completion Rate":0.84,"Response Rate":0.034},
         {"Date":"Q2-2018","Completion Rate":0.88,"Response Rate":0.027},
@@ -149,6 +149,283 @@ library(vegawidget)
       }
     }
   }
+}
+' |> as_vegaspec()
+```
+
+# Homework 7
+
+[Assignment](https://calvin-data304.netlify.app/hw/hw07-perception-and.html)
+
+## Exercise 1
+
+### a
+
+Bar charts are commonly used for representing amounts of things, especially categories of things. The bars should be ordered so they're easily comparable, but don't mess with the normal order if that's more intuitive. Try horizontal bars to save space when the bars' names are too long to sit side-by-side.
+
+### b
+
+You might not use bars when:
+ - You want the axis to start somewhere other than 0
+ - There are too many categories, making grouped bars cluttered
+ 
+### c
+
+Dot plots can show the same things as bars, but without as much space. Heatmaps can show 2 categorical variables in a more readable way than grouped bars.
+
+### d
+
+If the total of the groups is useful, then stacked bars might be worthwhile. Using facets or offsets is better for comparing each group against each other.
+
+### e
+
+Figure 6.3
+
+```{r}
+'
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json", "data":
+    { "url": "https://calvin-data304.netlify.app/data/cow-movies.csv"
+    },
+    "width": 500,
+    "height": 350,
+    "mark": "bar",
+    "transform": [{"calculate": "datum.amount / 1000000", "as": "millions"}],
+    "encoding": {
+      "x": {
+        "field": "millions",
+        "type": "quantitative",
+        "title": "weekend gross (million USD)",
+        "axis": {"tickCount": 3}
+      },
+      "y": {
+        "field": "title",
+        "type": "nominal",
+        "sort": "-x"
+      }
+    }
+}
+' |> as_vegaspec()
+```
+
+### f
+
+Figure 6.8
+
+```{r}
+'
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json", "data":
+    { "url": "https://calvin-data304.netlify.app/data/cow-income.csv"
+    },
+    "width": 500,
+    "height": 350,
+    "mark": "bar",
+    "transform": [{"filter": "datum.year == 2016 & datum.race != \'all\' & datum.race != \'white_non_hispanic\'"}],
+    "encoding": {
+      "x": {
+        "field": "race",
+        "type": "nominal",
+        "title": "",
+        "scale": {"domain": ["asian", "white", "hispanic", "black"]},
+        "axis": {"labelAngle": 0}
+      },
+      "xOffset": {
+        "field": "age",
+        "type": "ordinal"
+      },
+      "y": {
+        "field": "median_income",
+        "type": "quantitative",
+        "title": "median income (USD)",
+        "scale": {"domainMax": 100000},
+        "axis": {"format": "$,f"}
+      },
+      "color": {
+        "field": "age",
+        "type": "ordinal",
+        "title": "age (yrs)"
+      }
+    }
+}
+' |> as_vegaspec()
+```
+
+Figure 6.9
+
+```{r}
+'{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json", "data":
+    { "url": "https://calvin-data304.netlify.app/data/cow-income.csv"
+    },
+    "width": 250,
+    "height": 175,
+    "mark": "bar",
+    "transform": [{"filter": "datum.year == 2016 & datum.race != \'all\' & datum.race != \'white_non_hispanic\'"}],
+    "encoding": {
+      "facet": {
+        "field": "race",
+        "type": "nominal",
+        "title": "",
+        "columns": 2
+      },
+      "x": {
+        "field": "age",
+        "type": "ordinal",
+        "title": "age (yrs)",
+        "axis": {"labelAngle": 30}
+      },
+      "y": {
+        "field": "median_income",
+        "type": "quantitative",
+        "title": "median income (USD)",
+        "scale": {"domainMax": 100000},
+        "axis": {"format": "$,f"}
+      }
+    }
+}
+' |> as_vegaspec()
+```
+
+### g
+
+Figure 6.11
+
+```{r}
+'
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json", "data":
+    { "url": "https://calvin-data304.netlify.app/data/cow-gapminder.csv"
+    },
+    "transform": [{"filter": "datum.year == 2007 & datum.continent == \'Americas\'"}],
+    "width": 500,
+    "height": 350,
+    "mark": "point",
+    "encoding": {
+      "x": {
+        "field": "lifeExp",
+        "type": "quantitative",
+        "scale": {"zero": false},
+        "title": "life expectancy (years)"
+      },
+      "y": {
+        "field": "country",
+        "type": "nominal",
+        "sort": "-x",
+        "title": ""
+      }
+    }
+}
+' |> as_vegaspec()
+```
+
+Figure 6.12 is 'bad' because it wastes space showing 0 when it doesn't matter, making the difference the graph wants to show smaller and harder to read.
+
+Figure 6.13 is 'bad' because without any order it's hard to tell how we're supposed to compare points. It takes a lot of effort to get a big picture of life expectancy, instead the reader hasto individually find single countries to compare.
+
+## Exercise 2
+
+### b
+
+ - The goal is about human perception/interpretation, not just a literal representation of data, double check your graphics.
+ - Comparing things next to each other is way easier than over a distance, especially if there are a lot of other confusing details.
+ - You need to think about the audience, your audience may lack context or awareness of how a graph works.
+ 
+### c
+
+at 37:00 the background is on Tufte page 31
+41:13, the Napoleon's army in Russia, page 41
+
+## Exercise 3
+
+### a
+
+There is a square point mark at every combination of x and y in the frame, then color is the indicator of some quantitative field.
+
+### b
+
+Figure 6.14
+
+```{r}
+'
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json", "data":
+    { "url": "https://calvin-data304.netlify.app/data/cow-internet2.csv"
+    },
+    "width": 500,
+    "height": 350,
+    "mark": {
+      "type": "point",
+      "shape": "square",
+      "size": 340
+    },
+    "encoding": {
+      "x": {
+        "field": "year",
+        "type": "nominal"
+      },
+      "y": {
+        "field": "country",
+        "type": "nominal"
+      },
+      "fill": {
+        "field": "users",
+        "type": "quantitative"
+      }
+    }
+}
+' |> as_vegaspec()
+```
+I didn't find out how to sort by a specific value in time, may update later. Same with the NA holes but those might be easier to do in R
+
+### c
+
+Color differences are hard to see when not right next to each other
+
+### d
+
+There is enough of a trend to make a clear gradient, the story doesn't need specific detail to the point that the exact value matters. The location of the dark bars are the story rather than their exact color.
+I don't think it's a dealbreaker for the figure in part b, but it is a problem. It's hard to get a reference for any of the exact values, just which country uses more in general in a given year. It makes it less detailed than would be nice but the big picture is mostly intact.
+
+## Exercise 4
+
+### a
+
+Comparing the position of points/bars is way easier than the angle/distance of an arc. Bars are usually better.
+
+### b
+
+He argues that pie charts have at least some use, like for quickly showing which party is in majority since judging if a c=slice is >50% is pretty simple. Bars are better for relative sizes but might not show proportion as easily.
+
+### c
+
+He compares them to stacked bars and side-by-side bars. Pies are best for quickly showing very simple fractions like 1/2, otherwise stacked bars can also show proportion and side-by-side can also show small datasets. For relative proportions and many small parts side-by-side bars are best, and stacked bars are great for time series since they're basically one dimensional.
+
+### d
+
+```{r}
+'
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json", "data":
+    { "values": [
+      {"party":"CDU/CSU", "seats":243},
+      {"party":"FDP", "seats":39},
+      {"party":"SPD", "seats":214}
+      ]
+    },
+    "width": 500,
+    "height": 350,
+    "mark": "arc",
+    "encoding": {
+      "theta": {
+        "field": "seats",
+        "type": "quantitative"
+      },
+      "color": {
+        "field": "party",
+        "type": "nominal"
+      }
+    }
 }
 ' |> as_vegaspec()
 ```
