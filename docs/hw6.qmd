@@ -1,0 +1,91 @@
+---
+title: "hw6"
+format: html
+embed-resources: true
+author: "Luke Monsma"
+---
+
+# Homework 6
+
+[Assignment](https://calvin-data304.netlify.app/hw/hw06-tufte.html)
+
+## Exercise 1
+
+a.
+Something very interesting to me that Tufte brings up is in showing time series there are graphics I normally wouldn't think about as representing data. Showing how an animal moves in a series of pictures laid out to show time, or most interesting to me the graphic of the Rhone bridge collapse, which can't even assign time to the x axis and instead overlays a before and after. I don't know how much this will come up given I expect my data to be numeric, but it's a reminder to be creative.
+
+b.
+Playfair's chart on wheat prices compared to wages over time (page 34)
+![Graph](playfair_graphic.jpg){width=70%}
+I chose to look at this graphic because the idea of using 3-4 different marks on one timescale is very interesting. Using a fade-out to not overlap the bars and line is clever and not something I'd consider on a computer.
+X is time in year, Y is shillings used for both price and weekly wage, color is used just to distinguish parts.
+It's 3 layers, each of which should be simple. However the gradient to add space seems impossible in Vega-Lite, maybe a hackey solution could be made to emulate it but I doubt think anything that smooth is possible.
+The point is to give compare how prices and wages have changed over time, adding the current monarch at the top would have given extra historical context to help the reader.
+
+## Exercise 2
+
+a.
+The big lesson in this section seemed to be pay attention to the guides, axes should be labeled, consistent, and intuitive. Try to limit to what is relevant.
+
+b.
+Always be asking what someone who doesn't know the data or story would see first.
+
+## Exercise 3
+
+Part 1.
+  - Having 2 different Y axes both in % is confusing
+  - The response rate numbers go over the bars and are hard to read
+  - The main point feels hard to understand, I think the point is that responses went up? but I assume completion rate is completion given they responded, so when it goes down it's hard to know if overall there were more or less completed responses (especially with the mismatched scales)
+  
+Part 2.
+  - The Y axis can be made into one line that starts at 0
+  - The marks can be arranged differently so text isn't as necessary
+  - Make response rate the focus, and put completion rate under response to better show their relationship (I'm assuming that's how they work)
+
+Part 3.
+```{r}
+library(vegawidget)
+'
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json", "data":
+    { "values" :
+        [{"Date":"Q1-2017","Completion Rate":0.91,"Response Rate":0.023},
+        {"Date":"Q2-2017","Completion Rate":0.93,"Response Rate":0.018},
+        {"Date":"Q3-  2017","Completion Rate":0.91,"Response Rate":0.028},
+        {"Date":"Q42017","Completion Rate":0.89,"Response Rate":0.023},
+        {"Date":"Q1-2018","Completion Rate":0.84,"Response Rate":0.034},
+        {"Date":"Q2-2018","Completion Rate":0.88,"Response Rate":0.027},
+        {"Date":"Q3-2018","Completion Rate":0.91,"Response Rate":0.026},
+        {"Date":"Q4-2018","Completion Rate":0.87,"Response Rate":0.039},
+        {"Date":"Q1-2019","Completion Rate":0.83,"Response Rate":0.028}] 
+    },
+  "transform": [{"calculate": "datum[\'Completion Rate\'] * datum[\'Response Rate\']", "as": "Completed Response Rate"}],
+  "title": "Survey Participation Rates",
+  "repeat": {"layer": ["Response Rate", "Completed Response Rate"]},
+  "spec": {
+    "width": 450,
+    "height": 300,
+    "mark": "bar",
+    "encoding": {
+      "x": {
+        "field": "Date",
+        "type": "nominal",
+        "sort": null,
+        "title": "Quarter"
+      },
+      "y": {
+        "field": {"repeat": "layer"},
+        "type": "quantitative",
+        "title": "",
+        "axis": {
+          "format": ".1%"
+        }
+      },
+      "color": {
+        "datum": {"repeat": "layer"}
+      }
+    }
+  }
+}
+' |> as_vegaspec()
+```
