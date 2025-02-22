@@ -1,11 +1,11 @@
 ---
-title: "hw7"
+title: "Homework 7"
 format: html
 embed-resources: true
 author: "Luke Monsma"
 ---
 
-# Homework 7
+[Back](https://lukemonsma.github.io/DATA304/)
 
 [Assignment](https://calvin-data304.netlify.app/hw/hw07-perception-and.html)
 

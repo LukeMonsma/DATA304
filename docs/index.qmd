@@ -5,6 +5,10 @@ embed-resources: true
 author: "Luke Monsma"
 ---
 
-[Assignment](https://lukemonsma.github.io/DATA304/hw5.html)
+[Homework 5](https://lukemonsma.github.io/DATA304/hw5.html)
 
-[Assignment](https://lukemonsma.github.io/DATA304/hw5)
+[Homework 6](https://lukemonsma.github.io/DATA304/hw6.html)
+
+[Homework 7](https://lukemonsma.github.io/DATA304/hw7.html)
+
+[Homework 8](https://lukemonsma.github.io/DATA304/hw8.html)
