@@ -16,6 +16,7 @@ library(vegabrite)
 library(dplyr)
 library(readr)
 library(tidyr)
+library(jsonlite)
 supply_data_wide <- read.csv(file = "https://calvin-data304.netlify.app/data/swd-lets-practice-ex-2-3.csv")
 
 supply_data_wide <- supply_data_wide |>
@@ -49,19 +50,20 @@ vl_chart() |>
 vl_chart() |>
   vl_mark_bar() |>
   vl_encode_order(field = "type:N", sort = "ascending") |>
-  vl_encode_y("value:Q", title = "") |>
+  vl_encode_y("value:Q", title = "", stack = FALSE) |>
   vl_encode_x("date:N", title = "Month") |>
   vl_encode_color("type:N", title = "") |>
   vl_encode_size("type:N", legend = FALSE) |>
-  vl_scale_size(domain = c("demand", "capacity"), range = c(10, 15)) |>
+  vl_encode_opacity(value = 0.8) |>
+  vl_scale_size(domain = c("demand", "capacity"), range = c(7, 15)) |>
   vl_add_data(supply_data_long)
 ```
 
 ```{r}
 vl_chart() |>
   vl_mark_bar() |>
-  vl_encode_order(field = "type:N", sort = "ascending") |>
-  vl_encode_y("value:Q", title = "") |>
+  vl_encode_order(field = "type:N", sort = "descending") |>
+  vl_encode_y("value:Q", title = "", stack = FALSE) |>
   vl_encode_x("date:N", title = "Month") |>
   vl_encode_color("type:N", title = "") |>
   vl_add_data(supply_data_long)
@@ -100,18 +102,137 @@ vl_chart() |>
   vl_add_data(supply_data_wide)
 ```
 
+## Exercise 2
+
+### a
 
 ```{r}
-#| fig-cap: "Caption"
+jobs_url <- 
+  "https://cdn.jsdelivr.net/npm/vega-datasets@2.8.0/data/jobs.json"
+
+vl_chart() |>
+  vl_mark_line() |>
+  vl_encode_x("year:N", title = "") |>
+  vl_encode_y("perc:Q", aggregate = "sum", title = "Percentage of Jobs") |>
+  vl_encode_color("sex:N") |>
+  vl_add_data_url(jobs_url)
+```
+
+At every year the total percentage of jobs sums to 1 when sexes are combined. This graphic shows that perc is the percentage of all people who have an exact job and sex in the given year. If we look at men or women in isolation it will look like jobs are lost or gained across all occupations, this is the reason.
+
+### b
+
+```{r}
+#| fig-cap: "The jobs above the line are more male than female and those below the line are more female than male."
+
+middle_line <- vl_chart() |>
+  vl_mark_line() |>
+  vl_encode_x("women:Q") |>
+  vl_encode_y("men:Q") |>
+  vl_encode_color(value = "black") |>
+  vl_encode_opacity(value = .6) |>
+  vl_add_data(values = '[
+  {
+    "men": 0,
+    "women": 0
+  },
+  {
+    "men": 1,
+    "women": 1
+  }
+]', format = "json")
+
+vl_layer(middle_line) |>
+  vl_mark_point() |>
+  vl_pivot("sex", groupby = list("job", "year"), value = "perc") |>
+  vl_filter(filter = "datum.year == 1850 | datum.year == 1900 | datum.year == 1950 | datum.year == 2000") |>
+  vl_encode_x("women:Q") |>
+  vl_scale_x(type = "symlog", constant = 0.00001, domainMax = 1) |>  # note: scale must be set quite small
+  vl_axis_x(format = ".0%") |>
+  vl_encode_y("men:Q") |>
+  vl_scale_y(type = "symlog", constant = 0.00001, domainMax = 1) |>  # note: scale must be set quite small
+  vl_axis_y(format = ".0%") |>
+  vl_facet("year:N", title = "", columns = 2) |>
+  vl_encode_tooltip_array(list("job", "year")) |>
+  vl_encode_tooltip(field = "men", format = ".2%") |>
+  vl_encode_tooltip(field = "women", format = ".2%") |>
+  vl_add_properties(
+    title =  list( 
+      text = "Percent of people working various jobs",
+      subtitle = "Each dot represents the one occupation. Hover to see which occupation it is."
+      )) |>
+  vl_add_data_url(jobs_url) 
+```
+
+### c
+
+```{r}
+jobs <- as.data.frame(fromJSON(jobs_url))
+jobs <- jobs |> select(!count) |>
+  group_by(year) |>
+  filter(year == 1850 | year == 1900 | year == 1950 | year == 2000) |>
+  pivot_wider(names_from = sex, values_from = perc) |>
+  mutate(men = men / sum(men, na.rm = TRUE)) |>
+  mutate(women = women / sum(women, na.rm = TRUE))
+
 vl_chart() |>
   vl_mark_point() |>
-  vl_pivot(pivot = "year", value = "perc", groupby = list("job", "sex")) |>
-  vl_encode_x("1850:Q") |>
-  vl_encode_y("2000:Q") |>
-  vl_scale_x(type = "symlog", constant = 0.00001) |>
-  vl_scale_y(type = "symlog", constant = 0.00001) |>
-  vl_facet_column(field = "sex:N", title = "") |>
-  vl_encode_tooltip_array(list("job", "1850", "2000")) |>
-  vl_add_properties(title = "Jobs") |>
-  vl_add_data_url("https://cdn.jsdelivr.net/npm/vega-datasets@2.8.0/data/jobs.json")
+  vl_encode_x("women:Q", title = "Percent of Women") |>
+  vl_axis_x(format = ".0%") |>
+  vl_scale_x(type = "symlog", constant = 0.00001, domainMax = 1) |>  # note: scale must be set quite small
+  vl_encode_y("men:Q", title = "Percent of Men") |>
+  vl_axis_y(format = ".0%") |>
+  vl_scale_y(type = "symlog", constant = 0.00001, domainMax = 1) |>  # note: scale must be set quite small
+  vl_facet("year:N", title = "", columns = 2) |>
+  vl_encode_tooltip_array(list("job", "year")) |>
+  vl_encode_tooltip(field = "men", format = ".2%") |>
+  vl_encode_tooltip(field = "women", format = ".2%") |>
+  vl_add_properties(
+    title =  list( 
+      text = "Percent of men and women working various jobs",
+      subtitle = "Each dot represents the one occupation. Hover to see which occupation it is."
+      )) |>
+  vl_add_data(jobs) 
+```
+From what I can tell I could do this entirely in vegabrite with "joinaggregate" I think, didn't try in vegalite json to confirm but couldn't figure out how to use it here. Maybe there's another way too.
+
+## Exercise 3
+
+```{r}
+gas_per_liter <- read.csv("https://calvin-data304.netlify.app/data/pump_price_for_gasoline_us_per_liter.csv")
+countries <- read.csv("https://raw.githubusercontent.com/lukes/ISO-3166-Countries-with-Regional-Codes/master/all/all.csv")
+gas_data <- left_join(gas_per_liter, countries, by = join_by("country" == "name"))
+gas_data_set <- drop_na(gas_data, region)
+nrow(gas_data) - nrow(gas_data_set)
+gas_data_set <-  gas_data_set |> 
+  filter(!is.na(as.numeric(X2016)) & as.numeric(X2016) != 0) |>
+  mutate(gallon = as.numeric(X2016) * 3.785)
+gas_min <- gas_data_set |> slice_min(n = 10, order_by = gallon)
+gas_max <- gas_data_set |> slice_max(n = 10, order_by = gallon)
+```
+
+28 did not join correctly:
+some like the UAE or UK are named letters in gapminder but United Arab Emirates in countries
+a bunch like bolivia or congo have longer titles in countries data but either only the short name (Bolivia) or a shortened version (Congo, Dem. Rep.)
+some like cote d'Ivore are missing an accent in gapminder but have it in countries
+Kosovo isnt in the countries list but is in gapminder
+There are probably other unique kinds of missing connections but I'm stopping here, although I was hoping to use US data but one is USA the other is United States of America.
+
+```{r}
+vl_chart() |>
+  vl_mark_bar() |>
+  vl_encode_y("alpha.3:N", sort = "-x", title = "") |>
+  vl_encode_x("gallon:Q", title = "USD per Gallon") |>
+  vl_axis_x(format = "$.2") |>
+  vl_add_properties(title = "High Gas Prices by Country in 2016") |>
+  vl_add_data(gas_max)
+```
+```{r}
+vl_chart() |>
+  vl_mark_bar() |>
+  vl_encode_y("alpha.3:N", sort = "+x", title = "") |>
+  vl_encode_x("gallon:Q", title = "USD per Gallon") |>
+  vl_axis_x(format = "$.2") |>
+  vl_add_properties(title = "Low Gas Prices by Country in 2016") |>
+  vl_add_data(gas_min)
 ```
