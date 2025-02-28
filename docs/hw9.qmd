@@ -1,0 +1,23 @@
+---
+title: "Homework 9"
+format: html
+embed-resources: true
+author: "Luke Monsma"
+---
+
+[Back](https://lukemonsma.github.io/DATA304/)
+
+[Assignment](https://calvin-data304.netlify.app/hw/hw09-maps-etc.html)
+
+```{r}
+library(vegabrite)
+library(dplyr)
+library(readr)
+library(tidyr)
+library(jsonlite)
+```
+
+## Exercise 1
+
+### a
+
