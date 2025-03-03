@@ -4435,8 +4435,8 @@ Attaching package: &#39;dplyr&#39;</code></pre>
 modify_inner_spec.vegaspec_unit</code></pre>
 </div>
 <div class="cell-output-display">
-<div id="htmlwidget-fdcb22f8643157fb8f53" style="width:auto;height:auto;" class="vegawidget-vl5 html-widget"></div>
-<script type="application/json" data-for="htmlwidget-fdcb22f8643157fb8f53">{"x":{
+<div id="htmlwidget-87bb7e47a533b513482e" style="width:auto;height:auto;" class="vegawidget-vl5 html-widget"></div>
+<script type="application/json" data-for="htmlwidget-87bb7e47a533b513482e">{"x":{
   "chart_spec": {
     "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
     "layer": [
@@ -4578,8 +4578,8 @@ modify_inner_spec.vegaspec_unit</code></pre>
 modify_inner_spec.vegaspec_unit</code></pre>
 </div>
 <div class="cell-output-display">
-<div id="htmlwidget-70f9ee02c2ab9b9e569b" style="width:auto;height:auto;" class="vegawidget-vl5 html-widget"></div>
-<script type="application/json" data-for="htmlwidget-70f9ee02c2ab9b9e569b">{"x":{
+<div id="htmlwidget-d2fe5d82f590502decd7" style="width:auto;height:auto;" class="vegawidget-vl5 html-widget"></div>
+<script type="application/json" data-for="htmlwidget-d2fe5d82f590502decd7">{"x":{
   "chart_spec": {
     "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
     "layer": [
@@ -4733,8 +4733,8 @@ modify_inner_spec.vegaspec_unit</code></pre>
 <span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">vl_scale_color</span>(<span class="at">scheme =</span> <span class="st">&quot;blueorange&quot;</span>, <span class="at">domain =</span> <span class="fu">c</span>(<span class="st">&quot;strongly agree&quot;</span>, <span class="st">&quot;agree&quot;</span>, <span class="st">&quot;neither agree nor disagree&quot;</span>, <span class="st">&quot;disagree&quot;</span>, <span class="st">&quot;strongly disagre&quot;</span>)) <span class="sc">|&gt;</span></span>
 <span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">vl_encode_order</span>(<span class="st">&quot;number:Q&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div id="htmlwidget-1a5c859de0628d25c960" style="width:auto;height:auto;" class="vegawidget-vl5 html-widget"></div>
-<script type="application/json" data-for="htmlwidget-1a5c859de0628d25c960">{"x":{
+<div id="htmlwidget-ed75410d71535c2c7ac0" style="width:auto;height:auto;" class="vegawidget-vl5 html-widget"></div>
+<script type="application/json" data-for="htmlwidget-ed75410d71535c2c7ac0">{"x":{
   "chart_spec": {
     "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
     "mark": {
@@ -4857,6 +4857,76 @@ modify_inner_spec.vegaspec_unit</code></pre>
 </section>
 <section id="exercise-3" class="level2">
 <h2 class="anchored" data-anchor-id="exercise-3">Exercise 3</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>us_map_url <span class="ot">&lt;-</span> <span class="st">&quot;https://raw.githubusercontent.com/vega/vega-datasets/refs/heads/main/data/us-10m.json&quot;</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>state_obesity_url <span class="ot">&lt;-</span> <span class="st">&quot;https://raw.githubusercontent.com/vega/vega-datasets/refs/heads/main/data/obesity.json&quot;</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>state_map <span class="ot">&lt;-</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">vl_chart</span>() <span class="sc">|&gt;</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">vl_add_data</span>(</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">url =</span> us_map_url, </span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">format =</span> <span class="fu">list</span>(<span class="at">type =</span> <span class="st">&quot;topojson&quot;</span>, <span class="at">feature =</span> <span class="st">&quot;states&quot;</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">vl_lookup</span>(</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">lookup =</span> <span class="st">&quot;id&quot;</span>,</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">from =</span> <span class="fu">list</span>(</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>      <span class="at">data =</span> <span class="fu">list</span>(<span class="at">url =</span> state_obesity_url),</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>      <span class="at">key =</span> <span class="st">&quot;id&quot;</span>,</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>      <span class="at">fields =</span> <span class="fu">list</span>(<span class="st">&quot;rate&quot;</span>)) </span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">vl_add_properties</span>(<span class="at">projection =</span> <span class="fu">list</span>(<span class="at">type =</span> <span class="st">&quot;albersUsa&quot;</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">vl_mark_geoshape</span>(<span class="at">fill =</span> <span class="st">&quot;transparent&quot;</span>, <span class="at">stroke =</span> <span class="st">&quot;black&quot;</span>) <span class="sc">|&gt;</span></span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">vl_encode_fill</span>(<span class="st">&quot;rate:Q&quot;</span>, <span class="at">title =</span> <span class="st">&quot;Obesity Rate&quot;</span>)</span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>state_map <span class="sc">|&gt;</span> <span class="fu">vl_add_properties</span>(<span class="at">width =</span> <span class="dv">500</span>, <span class="at">height =</span> <span class="dv">300</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="htmlwidget-dd31ed8e591f018977f2" style="width:auto;height:auto;" class="vegawidget-vl5 html-widget"></div>
+<script type="application/json" data-for="htmlwidget-dd31ed8e591f018977f2">{"x":{
+  "chart_spec": {
+    "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+    "data": {
+      "format": {
+        "type": "topojson",
+        "feature": "states"
+      },
+      "url": "https://raw.githubusercontent.com/vega/vega-datasets/refs/heads/main/data/us-10m.json"
+    },
+    "transform": [
+      {
+        "lookup": "id",
+        "from": {
+          "data": {
+            "url": "https://raw.githubusercontent.com/vega/vega-datasets/refs/heads/main/data/obesity.json"
+          },
+          "key": "id",
+          "fields": [
+            "rate"
+          ]
+        }
+      }
+    ],
+    "projection": {
+      "type": "albersUsa"
+    },
+    "mark": {
+      "fill": "transparent",
+      "stroke": "black",
+      "type": "geoshape"
+    },
+    "encoding": {
+      "fill": {
+        "field": "rate",
+        "title": "Obesity Rate",
+        "type": "quantitative"
+      }
+    },
+    "height": 300,
+    "width": 500
+  },
+  "embed_options": {
+    "renderer": "canvas",
+    "defaultStyle": true
+  }
+},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
 </section>
 
 </main>

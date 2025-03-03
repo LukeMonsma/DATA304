@@ -131,3 +131,23 @@ I think the pie chart is better at emphasizing the majority support for "agree" 
 
 ## Exercise 3
 
+```{r}
+us_map_url <- "https://raw.githubusercontent.com/vega/vega-datasets/refs/heads/main/data/us-10m.json"
+state_obesity_url <- "https://raw.githubusercontent.com/vega/vega-datasets/refs/heads/main/data/obesity.json"
+state_map <-
+  vl_chart() |>
+  vl_add_data(
+    url = us_map_url, 
+    format = list(type = "topojson", feature = "states")) |>
+  vl_lookup(
+    lookup = "id",
+    from = list(
+      data = list(url = state_obesity_url),
+      key = "id",
+      fields = list("rate")) 
+  ) |>
+  vl_add_properties(projection = list(type = "albersUsa")) |>
+  vl_mark_geoshape(fill = "transparent", stroke = "black") |>
+  vl_encode_fill("rate:Q", title = "Obesity Rate")
+state_map |> vl_add_properties(width = 500, height = 300)
+```
