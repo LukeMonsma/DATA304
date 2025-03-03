@@ -4331,7 +4331,11 @@ if (HTMLWidgets.shinyMode) {
 
 
 <p><a href="https://lukemonsma.github.io/DATA304/">Back</a></p>
+<<<<<<< HEAD
 <p><a href>Assignment</a></p>
+=======
+<p><a href="https://calvin-data304.netlify.app/hw/hw09-maps-etc.html">Assignment</a></p>
+>>>>>>> afb2d591af3c3a2945a79416de93fd6859d27dc8
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(vegabrite)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -4353,6 +4357,7 @@ Attaching package: &#39;dplyr&#39;</code></pre>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(jsonlite)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<<<<<<< HEAD
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>base <span class="ot">&lt;-</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">vl_chart</span>() <span class="sc">|&gt;</span></span>
@@ -4391,6 +4396,362 @@ Attaching package: &#39;dplyr&#39;</code></pre>
     "width": 500,
     "mark": {
       "type": "line"
+=======
+<section id="exercise-1" class="level2">
+<h2 class="anchored" data-anchor-id="exercise-1">Exercise 1</h2>
+<section id="a" class="level3">
+<h3 class="anchored" data-anchor-id="a">a</h3>
+<ul>
+<li>The idea of making the color scales to not have any one stand out is interesting, especially since the scale designer won’t know how many colors are being used.</li>
+<li>I didn’t know about the pre-made accent scales, that’s useful</li>
+</ul>
+</section>
+<section id="b" class="level3">
+<h3 class="anchored" data-anchor-id="b">b</h3>
+<ul>
+<li>They’re grouped by what you want to show</li>
+<li>I don’t know what a single learned thing is, as a list of possibilities and use cases it’s helpful</li>
+</ul>
+</section>
+<section id="c" class="level3">
+<h3 class="anchored" data-anchor-id="c">c</h3>
+<p>As a guess:</p>
+<p>I have no clue how to: - Treemaps - Parallel Sets - Cartogram</p>
+<p>I think I could do something hackey: - Sina Plots - Hex Bins - Confidence Strips - Density Contours</p>
+<p>I think I’m most interested in treemaps, sorting stuff by area is a unique thing that would be useful to build off of.</p>
+</section>
+<section id="d" class="level3">
+<h3 class="anchored" data-anchor-id="d">d</h3>
+<p>I decided to remake those export graphics. Specifically I looked at <a href="https://games.oec.world/en/tradle/">Tradle</a> for reference. Turns out the export data for the US at least was easily findable at <a href="https://dataweb.usitc.gov/">https://dataweb.usitc.gov/</a></p>
+<p>The treemap itself looks maybe simple. There is a <a href="https://vega.github.io/vega/docs/transforms/treemap/">treemap transform</a> that somehow works it out.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>HTS2 <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="at">file =</span> <span class="st">&quot;HTS2.csv&quot;</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>HTS4 <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="at">file =</span> <span class="st">&quot;HTS4.csv&quot;</span>) <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="sc">!</span>X) <span class="sc">|&gt;</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">parent =</span> <span class="fu">floor</span>(HTS.Number <span class="sc">/</span> <span class="dv">100</span>))</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>HTS <span class="ot">&lt;-</span> <span class="fu">rows_append</span>(HTS4, HTS2) <span class="sc">|&gt;</span> <span class="fu">filter</span>(HTS.Number <span class="sc">&gt;</span> <span class="dv">0</span>)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(HTS, <span class="at">file =</span> <span class="st">&quot;HTS.csv&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>So I only found <a href="https://vega.github.io/vega/examples/treemap/">1 example</a> and I couldn’t get it to work</p>
+<p>This data should be in the right shape, but replacing the example data was giving trouble and I couldn’t find how to translate it to vegabrite. From what I can tell its just not in vegalite, only vega</p>
+</section>
+<section id="e" class="level3">
+<h3 class="anchored" data-anchor-id="e">e</h3>
+</section>
+</section>
+<section id="exercise-2" class="level2">
+<h2 class="anchored" data-anchor-id="exercise-2">Exercise 2</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>piedata <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;https://calvin-data304.netlify.app/data/likert-survey.csv&quot;</span>) <span class="sc">|&gt;</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(response <span class="sc">!=</span> <span class="st">&quot;no reponse&quot;</span>) <span class="sc">|&gt;</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(year) <span class="sc">|&gt;</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">percent =</span> count <span class="sc">/</span> <span class="fu">sum</span>(count))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="a-1" class="level3">
+<h3 class="anchored" data-anchor-id="a-1">a</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>piechart <span class="ot">&lt;-</span> <span class="cf">function</span>(filter, t) </span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>pie <span class="ot">&lt;-</span> <span class="fu">vl_chart</span>() <span class="sc">|&gt;</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">vl_mark_arc</span>()</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>text <span class="ot">&lt;-</span> <span class="fu">vl_chart</span>() <span class="sc">|&gt;</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">vl_mark_text</span>() <span class="sc">|&gt;</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">vl_encode_text</span>(<span class="st">&quot;percent:Q&quot;</span>, <span class="at">format =</span> <span class="st">&quot;.1%&quot;</span>) <span class="sc">|&gt;</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">vl_encode_stroke</span>(<span class="at">value =</span> <span class="dv">1</span>)</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="fu">vl_layer</span>(pie, text) <span class="sc">|&gt;</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">vl_config</span>(<span class="at">title =</span> t) <span class="sc">|&gt;</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">vl_filter</span>(filter) <span class="sc">|&gt;</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">vl_add_data</span>(piedata) <span class="sc">|&gt;</span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">vl_encode_color</span>(<span class="st">&quot;response:N&quot;</span>) <span class="sc">|&gt;</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">vl_scale_color</span>(<span class="at">scheme =</span> <span class="st">&quot;blueorange&quot;</span>, <span class="at">domain =</span> <span class="fu">c</span>(<span class="st">&quot;strongly agree&quot;</span>, <span class="st">&quot;agree&quot;</span>, <span class="st">&quot;neither agree nor disagree&quot;</span>, <span class="st">&quot;disagree&quot;</span>, <span class="st">&quot;strongly disagre&quot;</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">vl_encode_theta</span>(<span class="st">&quot;count:Q&quot;</span>, <span class="at">stack =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">vl_encode_radius</span>(<span class="at">value =</span> <span class="dv">100</span>)<span class="sc">|&gt;</span></span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">vl_encode_order</span>(<span class="st">&quot;number:Q&quot;</span>)</span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a><span class="fu">piechart</span>(<span class="st">&quot;datum.year == &#39;this year&#39;&quot;</span>, <span class="st">&quot;This Year&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Invalid schema for object passed to or created by
+modify_inner_spec.vegaspec_unit</code></pre>
+</div>
+<div class="cell-output-display">
+<div id="htmlwidget-87bb7e47a533b513482e" style="width:auto;height:auto;" class="vegawidget-vl5 html-widget"></div>
+<script type="application/json" data-for="htmlwidget-87bb7e47a533b513482e">{"x":{
+  "chart_spec": {
+    "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+    "layer": [
+      {
+        "mark": {
+          "type": "arc"
+        }
+      },
+      {
+        "mark": {
+          "type": "text"
+        },
+        "encoding": {
+          "text": {
+            "field": "percent",
+            "format": ".1%",
+            "type": "quantitative"
+          },
+          "stroke": {
+            "value": 1
+          }
+        }
+      }
+    ],
+    "config": {
+      "title": "This Year"
+    },
+    "transform": [
+      {
+        "filter": "datum.year == 'this year'"
+      }
+    ],
+    "data": {
+      "values": [
+        {
+          "number": 5,
+          "response": "strongly agree",
+          "count": 230,
+          "year": "this year",
+          "percent": 0.231388329979879
+        },
+        {
+          "number": 4,
+          "response": "agree",
+          "count": 320,
+          "year": "this year",
+          "percent": 0.321931589537223
+        },
+        {
+          "number": 3,
+          "response": "neither agree nor disagree",
+          "count": 192,
+          "year": "this year",
+          "percent": 0.193158953722334
+        },
+        {
+          "number": 2,
+          "response": "disagree",
+          "count": 95,
+          "year": "this year",
+          "percent": 0.0955734406438632
+        },
+        {
+          "number": 1,
+          "response": "strongly disagre",
+          "count": 157,
+          "year": "this year",
+          "percent": 0.1579476861167
+        },
+        {
+          "number": 5,
+          "response": "strongly agree",
+          "count": 240,
+          "year": "last year",
+          "percent": 0.237388724035608
+        },
+        {
+          "number": 4,
+          "response": "agree",
+          "count": 275,
+          "year": "last year",
+          "percent": 0.272007912957468
+        },
+        {
+          "number": 3,
+          "response": "neither agree nor disagree",
+          "count": 182,
+          "year": "last year",
+          "percent": 0.18001978239367
+        },
+        {
+          "number": 2,
+          "response": "disagree",
+          "count": 125,
+          "year": "last year",
+          "percent": 0.123639960435213
+        },
+        {
+          "number": 1,
+          "response": "strongly disagre",
+          "count": 189,
+          "year": "last year",
+          "percent": 0.186943620178042
+        }
+      ]
+    },
+    "encoding": {
+      "color": {
+        "field": "response",
+        "type": "nominal",
+        "scale": {
+          "domain": ["strongly agree", "agree", "neither agree nor disagree", "disagree", "strongly disagre"],
+          "scheme": "blueorange"
+        }
+      },
+      "theta": {
+        "field": "count",
+        "stack": true,
+        "type": "quantitative"
+      },
+      "radius": {
+        "value": 100
+      },
+      "order": {
+        "field": "number",
+        "type": "quantitative"
+      }
+    }
+  },
+  "embed_options": {
+    "renderer": "canvas",
+    "defaultStyle": true
+  }
+},"evals":[],"jsHooks":[]}</script>
+</div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">piechart</span>(<span class="st">&quot;datum.year == &#39;last year&#39;&quot;</span>, <span class="st">&quot;Last Year&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Invalid schema for object passed to or created by
+modify_inner_spec.vegaspec_unit</code></pre>
+</div>
+<div class="cell-output-display">
+<div id="htmlwidget-d2fe5d82f590502decd7" style="width:auto;height:auto;" class="vegawidget-vl5 html-widget"></div>
+<script type="application/json" data-for="htmlwidget-d2fe5d82f590502decd7">{"x":{
+  "chart_spec": {
+    "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+    "layer": [
+      {
+        "mark": {
+          "type": "arc"
+        }
+      },
+      {
+        "mark": {
+          "type": "text"
+        },
+        "encoding": {
+          "text": {
+            "field": "percent",
+            "format": ".1%",
+            "type": "quantitative"
+          },
+          "stroke": {
+            "value": 1
+          }
+        }
+      }
+    ],
+    "config": {
+      "title": "Last Year"
+    },
+    "transform": [
+      {
+        "filter": "datum.year == 'last year'"
+      }
+    ],
+    "data": {
+      "values": [
+        {
+          "number": 5,
+          "response": "strongly agree",
+          "count": 230,
+          "year": "this year",
+          "percent": 0.231388329979879
+        },
+        {
+          "number": 4,
+          "response": "agree",
+          "count": 320,
+          "year": "this year",
+          "percent": 0.321931589537223
+        },
+        {
+          "number": 3,
+          "response": "neither agree nor disagree",
+          "count": 192,
+          "year": "this year",
+          "percent": 0.193158953722334
+        },
+        {
+          "number": 2,
+          "response": "disagree",
+          "count": 95,
+          "year": "this year",
+          "percent": 0.0955734406438632
+        },
+        {
+          "number": 1,
+          "response": "strongly disagre",
+          "count": 157,
+          "year": "this year",
+          "percent": 0.1579476861167
+        },
+        {
+          "number": 5,
+          "response": "strongly agree",
+          "count": 240,
+          "year": "last year",
+          "percent": 0.237388724035608
+        },
+        {
+          "number": 4,
+          "response": "agree",
+          "count": 275,
+          "year": "last year",
+          "percent": 0.272007912957468
+        },
+        {
+          "number": 3,
+          "response": "neither agree nor disagree",
+          "count": 182,
+          "year": "last year",
+          "percent": 0.18001978239367
+        },
+        {
+          "number": 2,
+          "response": "disagree",
+          "count": 125,
+          "year": "last year",
+          "percent": 0.123639960435213
+        },
+        {
+          "number": 1,
+          "response": "strongly disagre",
+          "count": 189,
+          "year": "last year",
+          "percent": 0.186943620178042
+        }
+      ]
+    },
+    "encoding": {
+      "color": {
+        "field": "response",
+        "type": "nominal",
+        "scale": {
+          "domain": ["strongly agree", "agree", "neither agree nor disagree", "disagree", "strongly disagre"],
+          "scheme": "blueorange"
+        }
+      },
+      "theta": {
+        "field": "count",
+        "stack": true,
+        "type": "quantitative"
+      },
+      "radius": {
+        "value": 100
+      },
+      "order": {
+        "field": "number",
+        "type": "quantitative"
+      }
+>>>>>>> afb2d591af3c3a2945a79416de93fd6859d27dc8
     }
   },
   "embed_options": {
@@ -4400,6 +4761,221 @@ Attaching package: &#39;dplyr&#39;</code></pre>
 },"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
+<<<<<<< HEAD
+=======
+<p>Still don’t feel exactly comfortable with the labels, it seems to follow the color for where to put it so stroke covers it up. The instructions didn’t exactly make sense but this worked and seems related to what was suggested. Encode column was also weird with layers so for now theyre just 2 separate graphics. Also titles weren’t showing.</p>
+<p>I think percentages are more useful since the goal I imagine is to compare how opinions have changed between years, counts would be too hard to compare. Maybe a total count would be useful but not the comparison I want to make. I chose to remove the no responses, although I could go either way. It says something about how people responded, but isn’t important to whether people agree or disagree. I left it out because the color scale was simpler without it.</p>
+</section>
+<section id="b-1" class="level3">
+<h3 class="anchored" data-anchor-id="b-1">b</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">vl_chart</span>() <span class="sc">|&gt;</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">vl_mark_bar</span>() <span class="sc">|&gt;</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">vl_add_data</span>(piedata) <span class="sc">|&gt;</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">vl_encode_y</span>(<span class="st">&quot;percent:Q&quot;</span>, <span class="at">title =</span> <span class="st">&quot;&quot;</span>) <span class="sc">|&gt;</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">vl_encode_x</span>(<span class="st">&quot;year:N&quot;</span>, <span class="at">title =</span> <span class="st">&quot;&quot;</span>) <span class="sc">|&gt;</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">vl_scale_x</span>(<span class="at">domain =</span> <span class="fu">c</span>(<span class="st">&quot;this year&quot;</span>, <span class="st">&quot;last year&quot;</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">vl_encode_color</span>(<span class="st">&quot;response&quot;</span>) <span class="sc">|&gt;</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">vl_encode_color</span>(<span class="st">&quot;response:N&quot;</span>) <span class="sc">|&gt;</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">vl_scale_color</span>(<span class="at">scheme =</span> <span class="st">&quot;blueorange&quot;</span>, <span class="at">domain =</span> <span class="fu">c</span>(<span class="st">&quot;strongly agree&quot;</span>, <span class="st">&quot;agree&quot;</span>, <span class="st">&quot;neither agree nor disagree&quot;</span>, <span class="st">&quot;disagree&quot;</span>, <span class="st">&quot;strongly disagre&quot;</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">vl_encode_order</span>(<span class="st">&quot;number:Q&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="htmlwidget-ed75410d71535c2c7ac0" style="width:auto;height:auto;" class="vegawidget-vl5 html-widget"></div>
+<script type="application/json" data-for="htmlwidget-ed75410d71535c2c7ac0">{"x":{
+  "chart_spec": {
+    "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+    "mark": {
+      "type": "bar"
+    },
+    "data": {
+      "values": [
+        {
+          "number": 5,
+          "response": "strongly agree",
+          "count": 230,
+          "year": "this year",
+          "percent": 0.231388329979879
+        },
+        {
+          "number": 4,
+          "response": "agree",
+          "count": 320,
+          "year": "this year",
+          "percent": 0.321931589537223
+        },
+        {
+          "number": 3,
+          "response": "neither agree nor disagree",
+          "count": 192,
+          "year": "this year",
+          "percent": 0.193158953722334
+        },
+        {
+          "number": 2,
+          "response": "disagree",
+          "count": 95,
+          "year": "this year",
+          "percent": 0.0955734406438632
+        },
+        {
+          "number": 1,
+          "response": "strongly disagre",
+          "count": 157,
+          "year": "this year",
+          "percent": 0.1579476861167
+        },
+        {
+          "number": 5,
+          "response": "strongly agree",
+          "count": 240,
+          "year": "last year",
+          "percent": 0.237388724035608
+        },
+        {
+          "number": 4,
+          "response": "agree",
+          "count": 275,
+          "year": "last year",
+          "percent": 0.272007912957468
+        },
+        {
+          "number": 3,
+          "response": "neither agree nor disagree",
+          "count": 182,
+          "year": "last year",
+          "percent": 0.18001978239367
+        },
+        {
+          "number": 2,
+          "response": "disagree",
+          "count": 125,
+          "year": "last year",
+          "percent": 0.123639960435213
+        },
+        {
+          "number": 1,
+          "response": "strongly disagre",
+          "count": 189,
+          "year": "last year",
+          "percent": 0.186943620178042
+        }
+      ]
+    },
+    "encoding": {
+      "y": {
+        "field": "percent",
+        "title": "",
+        "type": "quantitative"
+      },
+      "x": {
+        "field": "year",
+        "title": "",
+        "type": "nominal",
+        "scale": {
+          "domain": ["this year", "last year"]
+        }
+      },
+      "color": {
+        "field": "response",
+        "type": "nominal",
+        "scale": {
+          "domain": ["strongly agree", "agree", "neither agree nor disagree", "disagree", "strongly disagre"],
+          "scheme": "blueorange"
+        }
+      },
+      "order": {
+        "field": "number",
+        "type": "quantitative"
+      }
+    }
+  },
+  "embed_options": {
+    "renderer": "canvas",
+    "defaultStyle": true
+  }
+},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+</section>
+<section id="c-1" class="level3">
+<h3 class="anchored" data-anchor-id="c-1">c</h3>
+<p>I think the pie chart is better at emphasizing the majority support for “agree” and may be better for the question I want to answer, what the general sentiment over time is. It even does a good job of showing th echange over time since agree + strongly agree is roughly half so its changes are obvious. I like the bars better for showing the same information in a fraction of the space. It could have an emphasis on 50% to add the majority line that the pie implicitly has if thats important. The pie would also much include the no responses, the 1 and 0 lines on the bars are very important for comparing the overall sentiment.</p>
+</section>
+</section>
+<section id="exercise-3" class="level2">
+<h2 class="anchored" data-anchor-id="exercise-3">Exercise 3</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>us_map_url <span class="ot">&lt;-</span> <span class="st">&quot;https://raw.githubusercontent.com/vega/vega-datasets/refs/heads/main/data/us-10m.json&quot;</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>state_obesity_url <span class="ot">&lt;-</span> <span class="st">&quot;https://raw.githubusercontent.com/vega/vega-datasets/refs/heads/main/data/obesity.json&quot;</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>state_map <span class="ot">&lt;-</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">vl_chart</span>() <span class="sc">|&gt;</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">vl_add_data</span>(</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">url =</span> us_map_url, </span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">format =</span> <span class="fu">list</span>(<span class="at">type =</span> <span class="st">&quot;topojson&quot;</span>, <span class="at">feature =</span> <span class="st">&quot;states&quot;</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">vl_lookup</span>(</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">lookup =</span> <span class="st">&quot;id&quot;</span>,</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">from =</span> <span class="fu">list</span>(</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>      <span class="at">data =</span> <span class="fu">list</span>(<span class="at">url =</span> state_obesity_url),</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>      <span class="at">key =</span> <span class="st">&quot;id&quot;</span>,</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>      <span class="at">fields =</span> <span class="fu">list</span>(<span class="st">&quot;rate&quot;</span>)) </span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">vl_add_properties</span>(<span class="at">projection =</span> <span class="fu">list</span>(<span class="at">type =</span> <span class="st">&quot;albersUsa&quot;</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">vl_mark_geoshape</span>(<span class="at">fill =</span> <span class="st">&quot;transparent&quot;</span>, <span class="at">stroke =</span> <span class="st">&quot;black&quot;</span>) <span class="sc">|&gt;</span></span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">vl_encode_fill</span>(<span class="st">&quot;rate:Q&quot;</span>, <span class="at">title =</span> <span class="st">&quot;Obesity Rate&quot;</span>)</span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>state_map <span class="sc">|&gt;</span> <span class="fu">vl_add_properties</span>(<span class="at">width =</span> <span class="dv">500</span>, <span class="at">height =</span> <span class="dv">300</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="htmlwidget-dd31ed8e591f018977f2" style="width:auto;height:auto;" class="vegawidget-vl5 html-widget"></div>
+<script type="application/json" data-for="htmlwidget-dd31ed8e591f018977f2">{"x":{
+  "chart_spec": {
+    "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+    "data": {
+      "format": {
+        "type": "topojson",
+        "feature": "states"
+      },
+      "url": "https://raw.githubusercontent.com/vega/vega-datasets/refs/heads/main/data/us-10m.json"
+    },
+    "transform": [
+      {
+        "lookup": "id",
+        "from": {
+          "data": {
+            "url": "https://raw.githubusercontent.com/vega/vega-datasets/refs/heads/main/data/obesity.json"
+          },
+          "key": "id",
+          "fields": [
+            "rate"
+          ]
+        }
+      }
+    ],
+    "projection": {
+      "type": "albersUsa"
+    },
+    "mark": {
+      "fill": "transparent",
+      "stroke": "black",
+      "type": "geoshape"
+    },
+    "encoding": {
+      "fill": {
+        "field": "rate",
+        "title": "Obesity Rate",
+        "type": "quantitative"
+      }
+    },
+    "height": 300,
+    "width": 500
+  },
+  "embed_options": {
+    "renderer": "canvas",
+    "defaultStyle": true
+  }
+},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+</section>
+>>>>>>> afb2d591af3c3a2945a79416de93fd6859d27dc8
 
 </main>
 <!-- /main column -->

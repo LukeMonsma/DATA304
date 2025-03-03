@@ -39,3 +39,133 @@ ans("x2", "y2")
 
 ### a
 
+ - The idea of making the color scales to not have any one stand out is interesting, especially since the scale designer won't know how many colors are being used.
+ - I didn't know about the pre-made accent scales, that's useful
+ 
+### b
+
+ - They're grouped by what you want to show
+ - I don't know what a single learned thing is, as a list of possibilities and use cases it's helpful
+ 
+### c
+
+As a guess:
+
+I have no clue how to:
+ - Treemaps
+ - Parallel Sets
+ - Cartogram
+ 
+I think I could do something hackey:
+ - Sina Plots
+ - Hex Bins
+ - Confidence Strips
+ - Density Contours
+ 
+I think I'm most interested in treemaps, sorting stuff by area is a unique thing that would be useful to build off of.
+
+### d
+ 
+I decided to remake those export graphics. Specifically I looked at [Tradle](https://games.oec.world/en/tradle/) for reference. Turns out the export data for the US at least was easily findable at [https://dataweb.usitc.gov/](https://dataweb.usitc.gov/)
+
+The treemap itself looks maybe simple. There is a [treemap transform](https://vega.github.io/vega/docs/transforms/treemap/) that somehow works it out.
+
+```{r}
+HTS2 <- read.csv(file = "HTS2.csv")
+HTS4 <- read.csv(file = "HTS4.csv") |> select(!X) |>
+  mutate(parent = floor(HTS.Number / 100))
+
+HTS <- rows_append(HTS4, HTS2) |> filter(HTS.Number > 0)
+
+write.csv(HTS, file = "HTS.csv")
+```
+
+So I only found [1 example](https://vega.github.io/vega/examples/treemap/) and I couldn't get it to work
+
+This data should be in the right shape, but replacing the example data was giving trouble and I couldn't find how to translate it to vegabrite. From what I can tell its just not in vegalite, only vega
+
+### e
+
+## Exercise 2
+
+```{r}
+piedata <- read.csv("https://calvin-data304.netlify.app/data/likert-survey.csv") |>
+  filter(response != "no reponse") |>
+  group_by(year) |>
+  mutate(percent = count / sum(count))
+```
+
+### a
+
+```{r}
+piechart <- function(filter, t) 
+{
+  
+pie <- vl_chart() |>
+  vl_mark_arc()
+
+text <- vl_chart() |>
+  vl_mark_text() |>
+  vl_encode_text("percent:Q", format = ".1%") |>
+  vl_encode_stroke(value = 1)
+
+vl_layer(pie, text) |>
+  vl_config(title = t) |>
+  vl_filter(filter) |>
+  vl_add_data(piedata) |>
+  vl_encode_color("response:N") |>
+  vl_scale_color(scheme = "blueorange", domain = c("strongly agree", "agree", "neither agree nor disagree", "disagree", "strongly disagre")) |>
+  vl_encode_theta("count:Q", stack = TRUE) |>
+  vl_encode_radius(value = 100)|>
+  vl_encode_order("number:Q")
+}
+
+piechart("datum.year == 'this year'", "This Year")
+piechart("datum.year == 'last year'", "Last Year")
+```
+
+Still don't feel exactly comfortable with the labels, it seems to follow the color for where to put it so stroke covers it up. The instructions didn't exactly make sense but this worked and seems related to what was suggested. Encode column was also weird with layers so for now theyre just 2 separate graphics. Also titles weren't showing.
+
+I think percentages are more useful since the goal I imagine is to compare how opinions have changed between years, counts would be too hard to compare. Maybe a total count would be useful but not the comparison I want to make. I chose to remove the no responses, although I could go either way. It says something about how people responded, but isn't important to whether people agree or disagree. I left it out because the color scale was simpler without it.
+
+### b
+
+```{r}
+vl_chart() |>
+  vl_mark_bar() |>
+  vl_add_data(piedata) |>
+  vl_encode_y("percent:Q", title = "") |>
+  vl_encode_x("year:N", title = "") |>
+  vl_scale_x(domain = c("this year", "last year")) |>
+  vl_encode_color("response") |>
+  vl_encode_color("response:N") |>
+  vl_scale_color(scheme = "blueorange", domain = c("strongly agree", "agree", "neither agree nor disagree", "disagree", "strongly disagre")) |>
+  vl_encode_order("number:Q")
+```
+
+### c
+
+I think the pie chart is better at emphasizing the majority support for "agree" and may be better for the question I want to answer, what the general sentiment over time is. It even does a good job of showing th echange over time since agree + strongly agree is roughly half so its changes are obvious. I like the bars better for showing the same information in a fraction of the space. It could have an emphasis on 50% to add the majority line that the pie implicitly has if thats important. The pie would also much include the no responses, the 1 and 0 lines on the bars are very important for comparing the overall sentiment.
+
+## Exercise 3
+
+```{r}
+us_map_url <- "https://raw.githubusercontent.com/vega/vega-datasets/refs/heads/main/data/us-10m.json"
+state_obesity_url <- "https://raw.githubusercontent.com/vega/vega-datasets/refs/heads/main/data/obesity.json"
+state_map <-
+  vl_chart() |>
+  vl_add_data(
+    url = us_map_url, 
+    format = list(type = "topojson", feature = "states")) |>
+  vl_lookup(
+    lookup = "id",
+    from = list(
+      data = list(url = state_obesity_url),
+      key = "id",
+      fields = list("rate")) 
+  ) |>
+  vl_add_properties(projection = list(type = "albersUsa")) |>
+  vl_mark_geoshape(fill = "transparent", stroke = "black") |>
+  vl_encode_fill("rate:Q", title = "Obesity Rate")
+state_map |> vl_add_properties(width = 500, height = 300)
+```
