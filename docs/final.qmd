@@ -1,0 +1,23 @@
+---
+title: "Final Portfolio"
+format: html
+embed-resources: true
+author: "Luke Monsma"
+code-tools: true
+---
+
+[Back](https://lukemonsma.github.io/DATA304/)
+
+[Assignment](https://calvin-data304.netlify.app/hw/hw10-final-portfolio.html)
+
+```{r setup}
+#| code-fold: true 
+library(vegabrite)
+library(dplyr)
+library(readr)
+library(tidyr)
+library(jsonlite)
+```
+
+## Exercise 1
+
