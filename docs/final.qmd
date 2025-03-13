@@ -11,7 +11,8 @@ code-tools: true
 [Assignment](https://calvin-data304.netlify.app/hw/hw10-final-portfolio.html)
 
 ```{r setup}
-#| code-fold: true 
+#| code-fold: true
+library(vegawidget) 
 library(vegabrite)
 library(dplyr)
 library(readr)
@@ -21,3 +22,273 @@ library(jsonlite)
 
 ## Exercise 1
 
+Importing Data
+
+```{r e1_data}
+#| code-fold: true
+
+genetics_twins <- read_csv("https://calvin-data304.netlify.app/data/twins-genetics-long.csv") |> 
+  group_by(twin, kit) |> 
+  mutate(`genetic share` = `genetic share` / sum(`genetic share`))
+
+genetics_kits <- read_csv("https://calvin-data304.netlify.app/data/twins-genetics-long.csv") |> 
+  group_by(twin, kit) |> 
+  mutate(`genetic share` = `genetic share` / sum(`genetic share`))
+```
+
+I decided to fix the data to make all genetic share numbers sum to 1. This could be wrong, maybe there are additional categories that are being recorded but not included here. But the one reading that summed to over 100% makes me think these are already being aggregated or simplified in some way, so I think it won't change the interpretation much to standardize a little more.
+
+### a
+
+One graphic with something I like is Priscilla's "Comparing Twins" graphic:
+
+```{r e1_good}
+#| code-fold: true
+'
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "data": {
+    "url": "https://calvin-data304.netlify.app/data/twins-genetics-long.json"
+  },
+  "width": 400,
+  "height": 350,
+  "params": [
+    {
+      "name": "pair",
+      "value": "1",
+      "bind": {"input": "select", "options": ["1", "2", "3", "4", "5", "6"]}
+    }
+  ],
+  "transform": [{"filter": "datum.pair==pair"}],
+  "mark": {"type": "point", "size": 70},
+  "encoding": {
+    "x": {
+      "field": "region",
+      "type": "nominal",
+      "scale": {
+        "domain": [
+          "Central Africa",
+          "East Asia",
+          "NW Europe",
+          "SE Europe",
+          "West Africa"
+        ]
+      }
+    },
+    "y": {
+      "field": "genetic share",
+      "type": "quantitative",
+      "title": "Genetic share",
+      "scale": {"domain": [0, 1]}
+    },
+    "xOffset": {"field": "random"},
+    "shape": {"field": "kit"},
+    "facet": {"field": "twin", "columns": 2, "title": "twins"}
+  }
+}
+' |> as_vegaspec()
+```
+
+It has a lot of empty space which I don't like and the symbols take a second to interpret, but I think it most intuitively shows the story that twins have mostly the same genetic readings within apps, but each app is different and sometimes mistaken. Using a select box to only look at one twin pair at a time keeps comparisons easy. One facet represents one individual and any differences are noticeable even while keeping all 3 test kits visible which many of the bar graphs made confusing to separate out.
+
+### b
+
+One graphic with something I didn't like is Alayna's "Comparing Kits"
+
+```{r e1_bad}
+#| code-fold: true
+'
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": "DNA Kits Similarities/Differences",
+  "data": {
+    "url": "https://calvin-data304.netlify.app/data/twins-genetics-long.json",
+    "format": {"type": "json"}
+  },
+  "height": 400,
+  "width": 450,
+  "mark": "boxplot",
+  "encoding": {
+    "x": {"field": "kit", "type": "nominal", "title": "DNA Kit"},
+    "y": {
+      "field": "genetic share",
+      "type": "quantitative",
+      "title": "Genetic Share"
+    },
+    "color": {"field": "kit", "type": "nominal", "title": "DNA Kit"}
+  }
+}
+' |> as_vegaspec()
+```
+
+There was a common problem in trying to understand what exactly to compare between the kits, and this graphic is the most simple version of that. It does show a slight difference, maybe Ancestry shows more diverse genetic makeups than the others more often? But comparing the genetic shares directly without including the difference in the region each share belongs to just shows that all of the kits did show genetics data but says little about how.
+
+### c and d
+
+```{r e1_twins}
+#| code-fold: true
+vl_chart() |>
+  vl_add_data(genetics_twins) |>
+  vl_add_parameter(name = "pair_param", value = 1) |>
+  vl_bind_select_input(parameter_name = "pair_param",
+                       name = "Twin Pair: ",
+                       options = list(1,2,3,4,5,6)) |>
+  vl_filter("datum.pair == pair_param") |>
+  vl_encode_x("region:N") |>
+  vl_axis_x(title = "", labelAngle = 25) |>
+  vl_encode_y("genetic share:Q") |>
+  vl_scale_y(domainMax = 1) |>
+  vl_axis_y(format = "%", title = "Genetic Makeup") |>
+  vl_encode_xOffset("id:N") |>
+  vl_mark_point() |>
+  vl_encode_detail("region:N") |> 
+  vl_encode_color("id:N", legend = FALSE) |>
+  vl_encode_shape("kit:N", title = "DNA Kit") |>
+  vl_add_properties(title = "Testing Identical Twins")
+```
+
+The comparison being made in the graphic is how similar are the twins to each other? Looking through each one, they all are roughly the same, but different tests have different readings such as on pair 1 Ancestry would assume more Northwest Europe while the others see a more even split of NW and SE. For some pairs like 5 there isn't any difference visible in the genetic data. Pair 4 is interesting as some kits read regions in one twin but not the other, further highlighting that these tests may not always see identical twins identically.
+
+```{r e1_kits}
+#| code-fold: true
+kits_A <- vl_chart() |>
+  vl_mark_point() |>
+  vl_filter("datum.id == 'A'")
+
+kits_B <- vl_chart() |>
+  vl_mark_point() |>
+  vl_filter("datum.id == 'B'")
+
+vl_layer(kits_A, kits_B) |>
+  vl_add_data(genetics_kits) |>
+  vl_encode_yOffset("id:N") |>
+  vl_mark_line() |>
+  vl_encode_x("genetic share:Q", title = "Genetic Makeup") |>
+  vl_axis_x(format = "%") |>
+  vl_encode_detail("kit:N") |>
+  vl_encode_color("pair:N", legend = FALSE) |>
+  vl_encode_y("kit:N") |>
+  vl_scale_y(domain = list("Ancestry", "23andMe", "MyHeritage")) |>
+  vl_encode_opacity(value = 0.7) |>
+  vl_facet("region:N", columns = 3, title = "") |> 
+  vl_add_properties(title = list(text = "How Consistent are Genetic Kits at Identifying Identical Twins?", subtitle = "Each color represents a set of identical twins, vertical lines indicate the test found no difference between them in that region"))
+```
+The question asked is related to comparing the twins, but instead of focusing broadly on which twins are seen differently this graphic is supposed to highlight which tests more reliably give twins similar results. Ancestry appears to be the winner if that is the primary goal, as all lines are quite vertical. I would say 23andMe is the next best, and MyHeritage is the least consistent. This graphic also  highlights that Ancestry seems to get slightly different results than the other two, each of which tend too line up.
+
+## Exercise 2
+
+I chose challenge #2.
+
+Immediately the issues I saw were that the Y axis is very unclear, is it thousands of contacts? The two numbers summarizing the important takeaway is good, but the rest of the graphic should emphasize that. The peaks around the new year make any change over time in the bars difficult to spot. It is a small growth as emphasized by the title, but I still think it can be emphasized.
+
+Looking at descriptions in the book, the two numbers of the growing total touchpoints and the bars on the chart are not directly related, confusing me. I only have data for the touchpoints per customer, so the graphic should be labeled as such. I also saw from the book the logical idea that if there are seasonal peaks then the important comparison is year-to-year, make it cyclic.
+
+```{r e2-data}
+#| code-fold: true
+touchpoints <- read_csv("https://raw.githubusercontent.com/LukeMonsma/DATA304/refs/heads/main/docs/swd-lets-practice-ex-5-03.csv") |>
+  separate(Date, into = c("year", "month"), sep = '-') |> 
+  mutate(`Total Touchpoints` = `Phone Touchpoints` + `Chat Touchpoints` + `Email Touchpoints`) |>
+  mutate(year = as.numeric(year), month = as.numeric(month)) |>
+  filter(year != 2020)
+```
+
+```{r e2-graphic}
+#| code-fold: true
+
+phone <- vl_chart() |>
+  vl_mark_line() |>
+  vl_encode_y("Phone Touchpoints:Q") |>
+  vl_encode_color(datum = "Phone Touchpoints")
+
+chat <- vl_chart() |>
+  vl_mark_line() |>
+  vl_encode_y("Chat Touchpoints:Q") |>
+  vl_encode_color(datum = "Chat Touchpoints")
+
+email <- vl_chart() |>
+  vl_mark_line() |>
+  vl_encode_y("Email Touchpoints:Q") |>
+  vl_encode_color(datum = "Email Touchpoints") |>
+  vl_axis_y(title = "Touchpoints per Customer") 
+
+total <- vl_chart() |>
+  vl_mark_line() |>
+  vl_encode_y("Total Touchpoints:Q") |>
+  vl_encode_color(datum = "Total Touchpoints")
+
+vl_layer(total, phone, chat, email) |>
+  vl_add_data(touchpoints) |>
+  vl_encode_detail("year:N") |>
+  vl_encode_x("month:N") |>
+  vl_axis_x(labelAngle = 0) |>
+  vl_encode_opacity(value = 0.7) |>
+  vl_encode_strokeDash("year:N", sort = "descending") |>
+  vl_add_properties(title = "Little Change in Touchpoints by Year")
+```
+
+## Exercise 3
+
+```{r e3}
+#| code-fold: true
+tanzania <- read_csv("https://raw.githubusercontent.com/LukeMonsma/DATA304/refs/heads/main/docs/tanzania.csv")
+
+fertility <- vl_chart() |>
+  vl_mark_line() |>
+  vl_encode_y("fertility_rate:Q", title = "Fertility Rate")|>
+  vl_encode_x("year:Q")|>
+  vl_axis_x(format = "")
+
+contraception <- vl_chart() |>
+  vl_mark_line() |>
+  vl_encode_y("contraception_use:Q", title = "Women Using Contraceptives") |>
+  vl_encode_x("year:Q") |>
+  vl_axis_x(format = "") |>
+  vl_axis_y(format = "%")
+
+vl_hconcat(fertility, contraception) |>
+  vl_add_data(tanzania) |>
+  vl_add_properties(title = "Development of Tanzanian Family Planning")
+```
+
+The story I saw in the data was that massive increases use of contraceptives seem to have had an impact on fertility rate and need for more family planning, however the drop in fertility is not as significant as I would assume. I felt showing the simple progression of those two numbers over time was enough to show that.
+
+## Exercise 4
+
+## Exercise 5
+
+### a
+
+I have encodings for shape, color, facet, stroke dash, and detail across exercises 1 and 2
+
+### b
+
+Both 1 and 2 use layers, either to use different marks or different variables.
+
+### c
+
+Exercise 1 uses facets
+
+### d
+
+Exercise 3 uses concatination
+
+### e 
+
+I forced exercise 1 part 1s x axis to always be 0 to 1, part 2 I sorted the kits by what I thought were the least to most consistent. Across all examples I changed the axis formatting to read easier.
+
+### f
+
+### g
+Example 1 has a select box to choose different twin pairs.
+
+## Exercise 6
+
+### a
+
+There were a lot of things I looked up that then I found in the slides that I just didn't remember and looked up anyway such as hconcat
+
+vl_encode_strokedash: https://vega.github.io/vega/docs/marks/line/
+
+how to add a color legend for layered charts: https://stackoverflow.com/questions/62440641/how-do-i-create-a-legend-for-a-layered-line-plot
+
+### b
