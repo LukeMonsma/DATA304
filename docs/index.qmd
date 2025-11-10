@@ -13,6 +13,4 @@ author: "Luke Monsma"
 
 [Homework 8](https://lukemonsma.github.io/DATA304/hw8.html)
 
-[Homework 9](https://lukemonsma.github.io/DATA304/hw9.html)
-
-[Final Portfolio](https://lukemonsma.github.io/DATA304/fianl.html)
+[Final Portfolio](https://lukemonsma.github.io/DATA304/final.html)
